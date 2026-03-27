@@ -87,6 +87,20 @@ static const double _multiplier=25.0;
 - (void)windowDidLoad
 {
     [super windowDidLoad];
+
+    // Liquid Glass Design
+    self.window.titlebarAppearsTransparent = YES;
+    self.window.styleMask |= NSWindowStyleMaskFullSizeContentView;
+    self.window.backgroundColor = [NSColor clearColor];
+
+    NSVisualEffectView *effectView = [[NSVisualEffectView alloc] initWithFrame:self.window.contentView.bounds];
+    effectView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    effectView.blendingMode = NSVisualEffectBlendingModeBehindWindow;
+    effectView.material = NSVisualEffectMaterialUnderWindowBackground;
+    effectView.state = NSVisualEffectStateActive;
+
+    [self.window.contentView addSubview:effectView positioned:NSWindowBelow relativeTo:nil];
+
     self.width=400; // minimum width to avoid toolbar collapse
     
     NSArray *const toolbarDefinition=@[kPanelScrolling, kPanelApp];

@@ -48,6 +48,19 @@
 - (void)windowDidLoad {
     [super windowDidLoad];
     
+    // Liquid Glass Design
+    self.window.titlebarAppearsTransparent = YES;
+    self.window.styleMask |= NSWindowStyleMaskFullSizeContentView;
+    self.window.backgroundColor = [NSColor clearColor];
+
+    NSVisualEffectView *effectView = [[NSVisualEffectView alloc] initWithFrame:self.window.contentView.bounds];
+    effectView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    effectView.blendingMode = NSVisualEffectBlendingModeBehindWindow;
+    effectView.material = NSVisualEffectMaterialUnderWindowBackground;
+    effectView.state = NSVisualEffectStateActive;
+
+    [self.window.contentView addSubview:effectView positioned:NSWindowBelow relativeTo:nil];
+
     // create an image view containing the test image
     NSImage *const testImage=[self testImage];
     const NSRect testRect=NSMakeRect(0, 0, testImage.size.width, testImage.size.height);
@@ -56,13 +69,14 @@
     [testView setBounds:testRect];
     
     // create the scroll view so that it fills the entire window
-    NSScrollView *const scrollView = [[NSScrollView alloc] initWithFrame:[[self.window contentView] frame]];
+    NSScrollView *const scrollView = [[NSScrollView alloc] initWithFrame:effectView.bounds];
     [scrollView setHasVerticalScroller:YES];
     [scrollView setHasHorizontalScroller:YES];
     [scrollView setBorderType:NSNoBorder];
     [scrollView setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
     [scrollView setDocumentView:testView];
-    [self.window setContentView:scrollView];
+    scrollView.drawsBackground = NO;
+    [effectView addSubview:scrollView];
     
     // scroll to top
     [[scrollView documentView] scrollPoint:NSMakePoint(0, testImage.size.height)];
