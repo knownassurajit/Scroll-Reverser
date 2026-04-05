@@ -60,8 +60,14 @@ static CGEventRef _callback(CGEventTapProxy proxy,
     {
         MouseTap *const tap=(__bridge MouseTap *)userInfo;
         const uint64_t time=_nanoseconds();
-        NSEvent *const event=[NSEvent eventWithCGEvent:eventRef];
         [(AppDelegate *)[NSApp delegate] refreshPermissions];
+
+        if (type == kCGEventTapDisabledByTimeout || type == kCGEventTapDisabledByUserInput) {
+            [tap enableTap];
+            return eventRef;
+        }
+
+        NSEvent *const event=[NSEvent eventWithCGEvent:eventRef];
 
         if (type==(CGEventType)NSEventTypeGesture)
         {
@@ -232,10 +238,6 @@ static CGEventRef _callback(CGEventTapProxy proxy,
             if (ioHidEventRef) {
                 CFRelease(ioHidEventRef);
             }
-        }
-        else
-        {
-            [tap enableTap];
         }
     
         [tap->logger logEventType:type forKey:@"type"];
