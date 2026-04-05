@@ -58,17 +58,18 @@ static void *_contextPermissions=&_contextPermissions;
 
 + (NSString *)sparkleFeedURLString
 {
-    NSString *urlString=[[NSUserDefaults standardUserDefaults] stringForKey:PrefsAppcastOverrideURL];
-    if (!urlString) {
-        if([self appIsProductionBuild]||[self appIsBetaBuild])
-        {
-            urlString=@"https://softwareupdate.pilotmoon.com/update/scrollreverser/";
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:PrefsBetaUpdates]) {
-                urlString=[urlString stringByAppendingString:@"appcast-beta.xml"];
-            }
-            else {
-                urlString=[urlString stringByAppendingString:@"appcast.xml"];
-            }
+    NSString *urlString = nil;
+    if ([self appIsProductionBuild] || [self appIsBetaBuild]) {
+        urlString = @"https://softwareupdate.pilotmoon.com/update/scrollreverser/";
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:PrefsBetaUpdates]) {
+            urlString = [urlString stringByAppendingString:@"appcast-beta.xml"];
+        } else {
+            urlString = [urlString stringByAppendingString:@"appcast.xml"];
+        }
+    } else {
+        NSString *overrideUrlString = [[NSUserDefaults standardUserDefaults] stringForKey:PrefsAppcastOverrideURL];
+        if ([overrideUrlString hasPrefix:@"https://"]) {
+            urlString = overrideUrlString;
         }
     }
     return urlString ? urlString : @"https://localhost/";
